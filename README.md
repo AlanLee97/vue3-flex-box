@@ -4,7 +4,7 @@
 
 基于vue3开发的FlexBox组件。
 
-a flex-box component developed based on vue3.
+A flex-box component developed based on vue3.
 
 ## 使用 | Usage
 
