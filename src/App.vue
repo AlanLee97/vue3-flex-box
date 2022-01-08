@@ -9,6 +9,11 @@ import FlexBox from './components/flex-box/flex-box.vue';
     <div>1</div>
     <div>2</div>
   </FlexBox>
+
+  <div v-flex.space-between>
+    <div>1</div>
+    <div>2</div>
+  </div>
 </template>
 
 <style>
