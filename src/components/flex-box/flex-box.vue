@@ -9,8 +9,11 @@ interface FlexBoxProps {
   centerV?: boolean
   centerHV?: boolean
   spaceBetween?: boolean
+  between?: boolean // the alias of spaceBetween
   spaceAround?: boolean
+  around?: boolean // the alias of spaceAround
   spaceEvenly?: boolean
+  evenly?: boolean // the alias of spaceEvenly
   directionRow?: boolean
   directionR?: boolean // the alias of directionRow
   horizontal?: boolean // the alias of directionRow
@@ -24,24 +27,33 @@ interface FlexBoxProps {
   wrap?: boolean
 }
 
-const props= defineProps<FlexBoxProps>()
+const props= defineProps<FlexBoxProps>();
+
+const handleAliasProps = (alias: string) => {
+  let className = alias;
+  switch(className) {
+    case 'wrap':
+      className = 'flex-wrap';
+      break;
+    case 'direction-r':
+    case 'horizontal':
+      className = 'direction-row';
+      break;
+    case 'direction-c':
+    case 'vertical':
+      className = 'direction-column';
+      break;
+  }
+  if(['between', 'around', 'evenly'].includes(className)) {
+    className = `space-${className}`
+  }
+  return className;
+}
 const className = ref('flex-box');
 const copyProps = JSON.parse(JSON.stringify(props));
 for (let key in copyProps) {
   if(copyProps[key]) {
-    switch(key) {
-      case 'wrap':
-        key = 'flex-wrap'
-        break;
-      case 'direction-r':
-      case 'horizontal':
-        key = 'direction-row'
-        break;
-      case 'direction-c':
-      case 'vertical':
-        key = 'direction-column'
-        break;
-    }
+    key = handleAliasProps(key);
     className.value += ' ' + transformCamelToDash(key);
   }
 }
