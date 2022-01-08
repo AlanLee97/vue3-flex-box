@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue';
+import { transformCamelToDash } from '../../utils';
 
-const props= defineProps<{ 
+interface FlexBoxProps {
   height?: string | number
   width?: string | number
   centerH?: boolean
@@ -11,46 +12,48 @@ const props= defineProps<{
   spaceAround?: boolean
   spaceEvenly?: boolean
   directionRow?: boolean
+  directionR?: boolean // the alias of directionRow
+  horizontal?: boolean // the alias of directionRow
   directionColumn?: boolean
+  directionC?: boolean // the alias of directionColumn
+  vertical?: boolean // the alias of directionColumn
   direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse'
   itemAlignStart?: boolean
   itemAlignEnd?: boolean
   flexNum?: number
- }>()
+  wrap?: boolean
+}
 
+const props= defineProps<FlexBoxProps>()
 const className = ref('flex-box');
-const style = ref('');
+const copyProps = JSON.parse(JSON.stringify(props));
+for (let key in copyProps) {
+  if(copyProps[key]) {
+    switch(key) {
+      case 'wrap':
+        key = 'flex-wrap'
+        break;
+      case 'direction-r':
+      case 'horizontal':
+        key = 'direction-row'
+        break;
+      case 'direction-c':
+      case 'vertical':
+        key = 'direction-column'
+        break;
+    }
+    className.value += ' ' + transformCamelToDash(key);
+  }
+}
 
 const {
   height,
   width,
-  centerH,
-  centerV,
-  centerHV,
-  spaceBetween,
-  spaceAround,
-  spaceEvenly,
-  directionRow,
-  directionColumn,
   direction,
-  itemAlignStart,
-  itemAlignEnd,
   flexNum,
 } = props;
 
-
-className.value += centerH ? ' center-h' : ''
-className.value += centerV ? ' center-v' : ''
-className.value += centerHV ? ' center-h-v' : ''
-className.value += spaceBetween ? ' space-between' : ''
-className.value += spaceAround ? ' space-around' : ''
-className.value += spaceEvenly ? ' space-evenly' : ''
-className.value += directionRow ? ' direction-row' : ''
-className.value += directionColumn ? ' direction-column' : ''
-className.value += itemAlignStart ? ' item-align-start' : ''
-className.value += itemAlignEnd ? ' item-align-end' : ''
-
-
+const style = ref('');
 style.value = `
 width: ${width ? width + 'px' : ''}; 
 height: ${height ? height + 'px' : ''}; 
@@ -119,6 +122,10 @@ ${direction ? 'flex-direction: ' + direction + ';' : ''}
 
 .item-align-end {
   align-items: flex-end;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
 }
 
 </style>
